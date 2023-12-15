@@ -1,3 +1,5 @@
+import path from "path";
+
 import chalk from "chalk";
 
 import figletAsync from "./utils/figletAsync.js";
@@ -19,8 +21,23 @@ const main = async () => {
     process.exit(1);
   }
 
+  console.log("\n");
+
+  const inputDirectory = "og_files";
+
   const assets = parseVerificationFile();
-  assets.forEach(asset => console.log(asset, asset.fileName));
+  
+  const filesToCheck = assets.map(asset => path.join(inputDirectory, asset.path));
+
+  for (const file of filesToCheck) {
+    const assetFileExists = await fileExists(file);
+
+    const coloredFileName = assetFileExists === true
+      ? chalk.greenBright(file)
+      : chalk.redBright(file);
+
+    console.log(coloredFileName);
+  } 
 };
 
 main();
