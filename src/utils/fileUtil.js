@@ -24,8 +24,6 @@ export const fileExists = (path) => {
 export const fileExistsCaseSensitive = async (filePath) => {
   if (!filePath)
     throw new Error("File path not set!");
-
-
   if (!(typeof filePath === "string"))
     throw new Error("filePath must be a string!");
 
@@ -36,12 +34,12 @@ export const fileExistsCaseSensitive = async (filePath) => {
 
   // Get Parent Directory of file
   const parentDirectory = path.dirname(filePath);
-  
+  const fileName = path.basename(filePath);
+
   try {
     const caseSensitiveFileNames = await fs.readdir(parentDirectory);
-    console.log(caseSensitiveFileNames);
 
-    return caseSensitiveFileNames.includes(path.basename(filePath));
+    return caseSensitiveFileNames.includes(fileName);
   } catch (e) {
     console.error("fs.readdir inside fileExistsCaseSensitiv() failed!");
     console.error(e);
