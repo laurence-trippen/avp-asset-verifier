@@ -16,7 +16,6 @@ const main = async () => {
   console.log(chalk.yellow(title));
   console.log(chalk.bgYellow(" Weyland-Yutani Corp. \n"));
 
-
   const verificationTxtExists = await fileExists('verification.txt');
 
   if (verificationTxtExists) {
@@ -30,7 +29,6 @@ const main = async () => {
   console.log("Workdir", chalk.yellow(process.cwd()), "\n");
 
   await checkOgFiles();
-
 
   while (shouldRun) {
     const operationOptions = {
