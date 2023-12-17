@@ -24,13 +24,13 @@ export const fileExists = (path) => {
 export const fileExistsCaseSensitive = async (filePath) => {
   if (!filePath)
     throw new Error("File path not set!");
+
   if (!(typeof filePath === "string"))
     throw new Error("filePath must be a string!");
 
   const exists = await fileExists(filePath);
 
-  if (!exists)
-    throw new Error("File path doesn't exists!");
+  if (!exists) return false;
 
   // Get Parent Directory of file
   const parentDirectory = path.dirname(filePath);

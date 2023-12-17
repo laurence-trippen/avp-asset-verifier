@@ -1,13 +1,16 @@
-import path from "path";
-import fs from "fs/promises";
-
 import chalk from "chalk";
+import inquirer from "inquirer";
 
 import figletAsync from "./utils/figletAsync.js";
-import { fileExists, fileExistsCaseSensitive } from "./utils/fileUtil.js";
-import { parseVerificationFile } from "./core/verification.js";
+import { fileExists } from "./utils/fileUtil.js";
+import { promptErrorHandler } from "./error/inquirerErrorHandler.js";
+import checkFiles from "./cli/checkFiles.js";
+import renameFiles from "./cli/renameFiles.js";
+import checkIntegrity from "./cli/checkIntegrity.js";
 
 const main = async () => {
+  let shouldRun = true;
+
   const title = await figletAsync("AvP Asset Verifier");
   console.log(chalk.yellow(title));
   console.log(chalk.bgYellow(" Weyland-Yutani Corp. \n"));
@@ -24,32 +27,42 @@ const main = async () => {
 
   console.log("\n");
 
-  const inputDirectory = "og_files";
-
-  const assets = parseVerificationFile();
-  
-  const filesToCheck = assets.map(asset => path.join(inputDirectory, asset.path));
+  // TODO: Check og_files
 
 
+  while (shouldRun) {
+    const operationOptions = {
+      RENAME_FILES: "Rename Files",
+      CHECK_FILES: "Check Files",
+      CHECK_INTEGRITY: "Check Integrity",
+      EXIT: "Exit",
+    };
 
-  for (const file of filesToCheck) {
-    const assetFileExists = await fileExists(file);
+    const { chooseOperation } = await inquirer
+      .prompt({
+        name: "chooseOperation",
+        type: "list",
+        message: "Choose an operation:\n",
+        choices: [...Object.values(operationOptions)],
+      })
+      .catch(promptErrorHandler);
 
-    if (assetFileExists) {
-      // console.log(path.basename(file));
+    switch (chooseOperation) {
+      case chooseOperation.RENAME_FILES:
+        renameFiles();
+        break;
+      case chooseOperation.CHECK_FILES:
+        checkFiles();
+        break;
+      case chooseOperation.CHECK_INTEGRITY:
+        checkIntegrity();
+        break;
+      case chooseOperation.EXIT:
+        shouldRun = false;
+      default:
+        break;
     }
-
-    const coloredFileName = assetFileExists === true
-      ? chalk.greenBright(file)
-      : chalk.redBright(file);
-
-    // console.log(coloredFileName);
   }
-
-
-  const exists = await fileExistsCaseSensitive("og_files/avp_huds/queen.RIF");
-
-  console.log(exists);
 };
 
-main();
+main().catch(err => console.error(err));
