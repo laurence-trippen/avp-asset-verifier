@@ -7,6 +7,7 @@ import { promptErrorHandler } from "./error/inquirerErrorHandler.js";
 import checkFiles from "./cli/checkFiles.js";
 import renameFiles from "./cli/renameFiles.js";
 import checkIntegrity from "./cli/checkIntegrity.js";
+import { checkOgFiles } from "./core/ogFiles.js";
 
 const main = async () => {
   let shouldRun = true;
@@ -26,8 +27,9 @@ const main = async () => {
   }
 
   console.log("\n");
+  console.log("Workdir", chalk.yellow(process.cwd()), "\n");
 
-  // TODO: Check og_files
+  await checkOgFiles();
 
 
   while (shouldRun) {
@@ -48,21 +50,24 @@ const main = async () => {
       .catch(promptErrorHandler);
 
     switch (chooseOperation) {
-      case chooseOperation.RENAME_FILES:
+      case operationOptions.RENAME_FILES:
         renameFiles();
         break;
-      case chooseOperation.CHECK_FILES:
-        checkFiles();
+      case operationOptions.CHECK_FILES:
+        await checkFiles();
         break;
-      case chooseOperation.CHECK_INTEGRITY:
+      case operationOptions.CHECK_INTEGRITY:
         checkIntegrity();
         break;
-      case chooseOperation.EXIT:
+      case operationOptions.EXIT:
         shouldRun = false;
       default:
         break;
     }
   }
+
+  console.log("\nWey-Yu wishes a safe day!");
+  process.exit(0);
 };
 
 main().catch(err => console.error(err));
