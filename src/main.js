@@ -49,7 +49,7 @@ const main = async () => {
 
     switch (chooseOperation) {
       case operationOptions.RENAME_FILES:
-        renameFiles();
+        await renameFiles();
         break;
       case operationOptions.CHECK_FILES:
         await checkFiles();
