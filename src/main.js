@@ -55,7 +55,7 @@ const main = async () => {
         await checkFiles();
         break;
       case operationOptions.CHECK_INTEGRITY:
-        checkIntegrity();
+        await checkIntegrity();
         break;
       case operationOptions.EXIT:
         shouldRun = false;
@@ -64,7 +64,7 @@ const main = async () => {
     }
   }
 
-  console.log("\nWey-Yu wishes a safe day!");
+  console.log(chalk.bgYellow("\n Wey-Yu wishes a safe day! "));
   process.exit(0);
 };
 
